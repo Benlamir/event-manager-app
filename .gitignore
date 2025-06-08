@@ -36,4 +36,3 @@ ENV/
 
 # SAM temporary files
 .aws-sam/
-samconfig.toml
