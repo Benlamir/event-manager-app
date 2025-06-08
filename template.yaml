@@ -1,0 +1,56 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  event-manager-app
+
+  Sample SAM Template for event-manager-app
+
+Globals:
+  Function:
+    LoggingConfig:
+      LogFormat: JSON
+
+Resources:
+  EventsTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      TableName: EventsManagementTable
+      PrimaryKey:
+        Name: PK
+        Type: String
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+
+  CreateEventFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/functions/create_event/
+      Handler: app.lambda_handler
+      Runtime: python3.12
+      Timeout: 20
+      Architectures:
+        - x86_64
+      Events:
+        CreateEventApi:
+          Type: Api
+          Properties:
+            Path: /events
+            Method: POST
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref EventsTable
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref EventsTable
+
+Outputs:
+  EventsApi:
+    Description: "API Gateway endpoint URL for Events API"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/events"
+  CreateEventFunctionArn:
+    Description: "Create Event Lambda Function ARN"
+    Value: !GetAtt CreateEventFunction.Arn
+  CreateEventFunctionIamRoleArn:
+    Description: "Implicit IAM Role created for Create Event function"
+    Value: !GetAtt CreateEventFunctionRole.Arn
