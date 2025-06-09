@@ -28,7 +28,7 @@ Resources:
           - GET
           - POST
           - OPTIONS
-        AllowCredentials: true
+
 
   EventsTable:
     Type: AWS::Serverless::SimpleTable
