@@ -10,7 +10,7 @@ table = dynamodb.Table(TABLE_NAME)
 def lambda_handler(event, context):
     try:
         path_parameters = event.get("pathParameters", {})
-        event_id = path_parameters.get("eventId")
+        event_id = path_parameters.get("event_id")
 
         if not event_id:
             return {"statusCode": 400, "body": json.dumps({"message": "eventId is missing from the path"})}
