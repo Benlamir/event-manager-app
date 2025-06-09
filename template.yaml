@@ -88,6 +88,31 @@ Resources:
         Variables:
           TABLE_NAME: !Ref EventsTable
 
+  AmplifyHosting:
+    Type: AWS::Amplify::App
+    Properties:
+      Name: event-manager-frontend
+      Repository: https://github.com/Benlamir/event-manager-app
+      AccessToken: "{{resolve:secretsmanager:github-personal-access-token}}"
+      BuildSpec:
+        |
+          version: 1
+          frontend:
+            phases:
+              preBuild:
+                commands:
+                  - npm install
+              build:
+                commands:
+                  - npm run build
+            artifacts:
+              baseDirectory: build
+              files:
+                - "**/*"
+          cache:
+            paths:
+              - node_modules/
+
 Outputs:
   EventsApi:
     Description: "API Gateway endpoint URL for Events API"
