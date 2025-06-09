@@ -10,6 +10,12 @@ Globals:
     LoggingConfig:
       LogFormat: JSON
 
+  Api:
+    Cors:
+      AllowOrigins: "'*'" # Allows requests from any origin
+      AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      AllowMethods: "'GET,POST,PUT,DELETE,OPTIONS'"
+
 Resources:
   EventsTable:
     Type: AWS::Serverless::SimpleTable
