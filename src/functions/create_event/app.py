@@ -17,13 +17,16 @@ def lambda_handler(event, context):
     Path: /events
     Body: { "eventName": "Community Tournament", "eventDate": "2025-08-15T19:00:00Z", "capacity": 64, "description": "Weekly community games!" }
     """
+    print("--- CreateEventFunction starting ---")
     try:
         # Load the request body from the event
         body = json.loads(event.get("body", "{}"))
+        print(f"Received body: {body}")
 
         # --- Basic Validation ---
         required_fields = ["eventName", "eventDate", "capacity"]
         if not all(field in body for field in required_fields):
+            print("Validation failed: Missing required fields.")
             return {
                 "statusCode": 400,
                 "body": json.dumps({"message": "Missing required fields (eventName, eventDate, capacity)"})
@@ -42,8 +45,13 @@ def lambda_handler(event, context):
             "CreatedAt": datetime.utcnow().isoformat()
         }
 
+        print(f"Attempting to write to DynamoDB. Table: {TABLE_NAME}, Item: {item_to_create}")
+
         # --- Save the data to DynamoDB ---
-        table.put_item(Item=item_to_create)
+        response = table.put_item(Item=item_to_create)
+
+        print(f"DynamoDB put_item response: {response}")
+        print("--- CreateEventFunction finished successfully ---")
 
         # --- Return a success response ---
         return {
@@ -58,8 +66,7 @@ def lambda_handler(event, context):
         }
 
     except Exception as e:
-        # Using a structured logger is better, but print is fine for now
-        print(f"Error: {e}")
+        print(f"!!! AN ERROR OCCURRED: {e} !!!")
         return {
             "statusCode": 500,
             "body": json.dumps({"message": "Internal Server Error"})
