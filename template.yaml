@@ -10,13 +10,18 @@ Globals:
     LoggingConfig:
       LogFormat: JSON
 
-  Api:
-    Cors:
-      AllowOrigin: "'*'" # Allows requests from any origin
-      AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
-      AllowMethods: "'GET,POST,PUT,DELETE,OPTIONS'"
 
 Resources:
+  EventsApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      Cors:
+        AllowOrigin: "'*'" # The single quotes are important
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+        AllowMethods: "'GET,POST,OPTIONS'"
+        AllowCredentials: true
+
   EventsTable:
     Type: AWS::Serverless::SimpleTable
     Properties:
