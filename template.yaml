@@ -3,46 +3,29 @@ Transform: AWS::Serverless-2016-10-31
 Description: >
   event-manager-app
 
-  Sample SAM Template for event-manager-app
-
 Globals:
   Function:
     LoggingConfig:
       LogFormat: JSON
 
-
 Resources:
-  # This is our explicitly defined HTTP API with an inline OpenAPI definition
+  # This is our explicitly defined HTTP API
   EventsApi:
     Type: AWS::Serverless::HttpApi
     Properties:
       CorsConfiguration:
-        AllowOrigins: ["*"]
-        AllowHeaders: ["Content-Type", "X-Amz-Date", "Authorization", "X-Api-Key", "X-Amz-Security-Token"]
-        AllowMethods: ["GET", "POST", "OPTIONS"]
-      DefinitionBody:
-        openapi: '3.0.1'
-        info:
-          title: !Ref AWS::StackName
-          version: '1.0'
-        paths:
-          /events:
-            post:
-              x-amazon-apigateway-integration:
-                httpMethod: POST
-                type: aws_proxy
-                uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${CreateEventFunction.Arn}/invocations"
-          /events/{event_id}/participants:
-            get:
-              x-amazon-apigateway-integration:
-                httpMethod: POST
-                type: aws_proxy
-                uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetParticipantsFunction.Arn}/invocations"
-            post:
-              x-amazon-apigateway-integration:
-                httpMethod: POST
-                type: aws_proxy
-                uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RegisterParticipantFunction.Arn}/invocations"
+        AllowOrigins:
+          - "*"
+        AllowHeaders:
+          - Content-Type
+          - X-Amz-Date
+          - Authorization
+          - X-Api-Key
+          - X-Amz-Security-Token
+        AllowMethods:
+          - GET
+          - POST
+          - OPTIONS
 
   EventsTable:
     Type: AWS::Serverless::SimpleTable
@@ -55,6 +38,7 @@ Resources:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1
 
+  # All functions now have an "Api" event source that points to the explicit API above
   CreateEventFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -62,6 +46,13 @@ Resources:
       Handler: app.lambda_handler
       Runtime: python3.12
       Timeout: 20
+      Events:
+        ApiEvent:
+          Type: HttpApi
+          Properties:
+            Path: /events
+            Method: post
+            ApiId: !Ref EventsApi
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref EventsTable
@@ -76,6 +67,13 @@ Resources:
       Handler: app.lambda_handler
       Runtime: python3.12
       Timeout: 20
+      Events:
+        ApiEvent:
+          Type: HttpApi
+          Properties:
+            Path: /events/{event_id}/participants
+            Method: post
+            ApiId: !Ref EventsApi
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref EventsTable
@@ -90,6 +88,13 @@ Resources:
       Handler: app.lambda_handler
       Runtime: python3.12
       Timeout: 20
+      Events:
+        ApiEvent:
+          Type: HttpApi
+          Properties:
+            Path: /events/{event_id}/participants
+            Method: get
+            ApiId: !Ref EventsApi
       Policies:
         - DynamoDBReadPolicy:
             TableName: !Ref EventsTable
@@ -98,12 +103,6 @@ Resources:
           TABLE_NAME: !Ref EventsTable
 
 Outputs:
-  EventsApi:
+  EventsApiUrl:
     Description: "API Gateway endpoint URL for Events API"
-    Value: !Sub "https://${EventsApi}.execute-api.${AWS::Region}.amazonaws.com/"
-  CreateEventFunctionArn:
-    Description: "Create Event Lambda Function ARN"
-    Value: !GetAtt CreateEventFunction.Arn
-  CreateEventFunctionIamRoleArn:
-    Description: "Implicit IAM Role created for Create Event function"
-    Value: !GetAtt CreateEventFunctionRole.Arn
+    Value: !Sub "https://${EventsApi}.execute-api.${AWS::Region}.amazonaws.com"
