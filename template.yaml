@@ -12,23 +12,37 @@ Globals:
 
 
 Resources:
+  # This is our explicitly defined HTTP API with an inline OpenAPI definition
   EventsApi:
     Type: AWS::Serverless::HttpApi
     Properties:
       CorsConfiguration:
-        AllowOrigins:
-          - "*"
-        AllowHeaders:
-          - Content-Type
-          - X-Amz-Date
-          - Authorization
-          - X-Api-Key
-          - X-Amz-Security-Token
-        AllowMethods:
-          - GET
-          - POST
-          - OPTIONS
-
+        AllowOrigins: ["*"]
+        AllowHeaders: ["Content-Type", "X-Amz-Date", "Authorization", "X-Api-Key", "X-Amz-Security-Token"]
+        AllowMethods: ["GET", "POST", "OPTIONS"]
+      DefinitionBody:
+        openapi: '3.0.1'
+        info:
+          title: !Ref AWS::StackName
+          version: '1.0'
+        paths:
+          /events:
+            post:
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${CreateEventFunction.Arn}/invocations"
+          /events/{eventId}/participants:
+            get:
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetParticipantsFunction.Arn}/invocations"
+            post:
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RegisterParticipantFunction.Arn}/invocations"
 
   EventsTable:
     Type: AWS::Serverless::SimpleTable
@@ -48,15 +62,6 @@ Resources:
       Handler: app.lambda_handler
       Runtime: python3.12
       Timeout: 20
-      Architectures:
-        - x86_64
-      Events:
-        CreateEventApi:
-          Type: HttpApi
-          Properties:
-            Path: /events
-            Method: POST
-            ApiId: !Ref EventsApi
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref EventsTable
@@ -71,22 +76,13 @@ Resources:
       Handler: app.lambda_handler
       Runtime: python3.12
       Timeout: 20
-      Architectures:
-        - x86_64
-      Events:
-        RegisterParticipantApi:
-          Type: HttpApi
-          Properties:
-            Path: /events/{eventId}/participants
-            Method: POST
-            ApiId: !Ref EventsApi
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref EventsTable
       Environment:
         Variables:
           TABLE_NAME: !Ref EventsTable
-  
+
   GetParticipantsFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -94,15 +90,6 @@ Resources:
       Handler: app.lambda_handler
       Runtime: python3.12
       Timeout: 20
-      Architectures:
-        - x86_64
-      Events:
-        GetParticipantsApi:
-          Type: HttpApi
-          Properties:
-            Path: /events/{eventId}/participants
-            Method: GET
-            ApiId: !Ref EventsApi
       Policies:
         - DynamoDBReadPolicy:
             TableName: !Ref EventsTable
