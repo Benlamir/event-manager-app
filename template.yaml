@@ -13,14 +13,22 @@ Globals:
 
 Resources:
   EventsApi:
-    Type: AWS::Serverless::Api
+    Type: AWS::Serverless::HttpApi
     Properties:
-      StageName: Prod
-      Cors:
-        AllowOrigin: "'*'" # The single quotes are important
-        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
-        AllowMethods: "'GET,POST,OPTIONS'"
-        
+      CorsConfiguration:
+        AllowOrigins:
+          - "*"
+        AllowHeaders:
+          - Content-Type
+          - X-Amz-Date
+          - Authorization
+          - X-Api-Key
+          - X-Amz-Security-Token
+        AllowMethods:
+          - GET
+          - POST
+          - OPTIONS
+        AllowCredentials: true
 
   EventsTable:
     Type: AWS::Serverless::SimpleTable
@@ -44,10 +52,11 @@ Resources:
         - x86_64
       Events:
         CreateEventApi:
-          Type: Api
+          Type: HttpApi
           Properties:
             Path: /events
             Method: POST
+            ApiId: !Ref EventsApi
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref EventsTable
@@ -66,10 +75,11 @@ Resources:
         - x86_64
       Events:
         RegisterParticipantApi:
-          Type: Api
+          Type: HttpApi
           Properties:
-            Path: /events/{event_id}/participants
+            Path: /events/{eventId}/participants
             Method: POST
+            ApiId: !Ref EventsApi
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref EventsTable
@@ -88,10 +98,11 @@ Resources:
         - x86_64
       Events:
         GetParticipantsApi:
-          Type: Api
+          Type: HttpApi
           Properties:
-            Path: /events/{event_id}/participants
+            Path: /events/{eventId}/participants
             Method: GET
+            ApiId: !Ref EventsApi
       Policies:
         - DynamoDBReadPolicy:
             TableName: !Ref EventsTable
@@ -102,7 +113,7 @@ Resources:
 Outputs:
   EventsApi:
     Description: "API Gateway endpoint URL for Events API"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/events"
+    Value: !Sub "https://${EventsApi}.execute-api.${AWS::Region}.amazonaws.com/"
   CreateEventFunctionArn:
     Description: "Create Event Lambda Function ARN"
     Value: !GetAtt CreateEventFunction.Arn
