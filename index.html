@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Manager Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="app">
+        <div class="top-bar"></div>
+
+        <div class="dashboard-container">
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <button id="add-event-btn" class="add-event-button">+</button>
+                </div>
+                <ul id="event-list" class="event-list">
+                    <li class="event-list-item active">Tournoi Holograme Wuthe...</li>
+                    <li class="event-list-item">Another Event</li>
+                </ul>
+            </aside>
+
+            <main class="main-content">
+                <div class="event-details-header">
+                    <h1>Tournoi Holograme Wuthering Waves</h1>
+                </div>
+
+                <div class="tabs-container">
+                    <nav class="tab-nav">
+                        <button class="tab-link active" data-tab="apercu">Aperçu</button>
+                        <button class="tab-link" data-tab="participants">Participants</button>
+                        <button class="tab-link" data-tab="waitlist">Liste d'attente</button>
+                        <button class="tab-link" data-tab="email-config">Configuration Email</button>
+                    </nav>
+
+                    <div class="tab-content">
+                        <div id="apercu-tab" class="tab-panel active">
+                            <div class="apercu-details">
+                                <div class="apercu-image-placeholder">
+                                    <p>Event Image</p>
+                                </div>
+                                <div class="apercu-info">
+                                    <h3>Quand et Où</h3>
+                                    <p>📅 27 AVR.</p>
+                                    <p>⏰ 19:00 - 20:00 UTC+1</p>
+                                    <p>☑️ Discord</p>
+                                </div>
+                            </div>
+
+                            <div class="participants-summary">
+                                <h3>Résumé des participations</h3>
+                                <div class="summary-item">
+                                    <span>Inscrits</span>
+                                    <div class="progress-bar-container">
+                                        <div class="progress-bar" style="width: 43.75%;"></div>
+                                    </div>
+                                    <span>7/16</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span>Confirmés</span>
+                                    <div class="progress-bar-container">
+                                        <div class="progress-bar" style="width: 28.57%;"></div>
+                                    </div>
+                                    <span>2/7</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span>En liste d'attente</span>
+                                    <div class="progress-bar-container">
+                                        <div class="progress-bar" style="width: 0%;"></div>
+                                    </div>
+                                    <span>0</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span>Participations annulées</span>
+                                    <span>2</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="participants-tab" class="tab-panel">
+                        </div>
+                        <div id="waitlist-tab" class="tab-panel">
+                        </div>
+                        <div id="email-config-tab" class="tab-panel">
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script type="module" src="js/main.js"></script>
+</body>
+</html> 
