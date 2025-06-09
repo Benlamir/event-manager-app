@@ -29,7 +29,7 @@ def lambda_handler(event, context):
             print("Validation failed: Missing required fields.")
             return {
                 "statusCode": 400,
-                "body": json.dumps({"message": "Missing required fields (eventName, eventDate, capacity)"})
+                "body": json.dumps({"message": "Missing required fields"})
             }
 
         # --- Prepare the data for DynamoDB ---
@@ -48,9 +48,14 @@ def lambda_handler(event, context):
         print(f"Attempting to write to DynamoDB. Table: {TABLE_NAME}, Item: {item_to_create}")
 
         # --- Save the data to DynamoDB ---
-        response = table.put_item(Item=item_to_create)
+        db_response = table.put_item(Item=item_to_create)
 
-        print(f"DynamoDB put_item response: {response}")
+        print(f"DynamoDB put_item response: {db_response}")
+
+        # Check the HTTP status code from the database response
+        if db_response.get("ResponseMetadata", {}).get("HTTPStatusCode") != 200:
+            raise Exception(f"DynamoDB put_item failed with status code: {db_response.get('ResponseMetadata', {}).get('HTTPStatusCode')}")
+
         print("--- CreateEventFunction finished successfully ---")
 
         # --- Return a success response ---
@@ -60,14 +65,16 @@ def lambda_handler(event, context):
                 "Content-Type": "application/json"
             },
             "body": json.dumps({
-                "message": "Event created successfully",
-                "eventId": event_id
+                "message": "Event metadata created successfully",
+                "eventId": event_id,
+                "dynamoDBResponse": db_response.get("ResponseMetadata") # Return the DB response for debugging
             })
         }
 
     except Exception as e:
-        print(f"!!! AN ERROR OCCURRED: {e} !!!")
+        # Log the full error to CloudWatch
+        print(f"!!! CREATE_EVENT_FUNCTION_ERROR: {e} !!!")
         return {
             "statusCode": 500,
-            "body": json.dumps({"message": "Internal Server Error"})
+            "body": json.dumps({"message": "An error occurred", "error": str(e)})
         }

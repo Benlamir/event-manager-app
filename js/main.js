@@ -8,7 +8,7 @@ import { renderEventDetails } from './ui.js';
 // This function runs when the page loads
 async function loadAndDisplayEvent() {
     // For this test, let's use the eventId from our last successful curl test
-    const eventId = "52af6f0b-410b-4e2d-bd14-81b03a91dba1"; // Use a real ID from your tests
+    const eventId = "115ca1a7-1cc1-4440-aebd-f86d0d3a055e"; // Use a real ID from your tests
 
     console.log(`Fetching data for event: ${eventId}`);
     const eventData = await getEventDetails(eventId);
