@@ -32,7 +32,7 @@ Resources:
                 httpMethod: POST
                 type: aws_proxy
                 uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${CreateEventFunction.Arn}/invocations"
-          /events/{eventId}/participants:
+          /events/{event_id}/participants:
             get:
               x-amazon-apigateway-integration:
                 httpMethod: POST
