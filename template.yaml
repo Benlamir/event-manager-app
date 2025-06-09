@@ -20,7 +20,7 @@ Resources:
         AllowOrigin: "'*'" # The single quotes are important
         AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
         AllowMethods: "'GET,POST,OPTIONS'"
-        AllowCredentials: true
+        
 
   EventsTable:
     Type: AWS::Serverless::SimpleTable
