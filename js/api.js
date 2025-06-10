@@ -54,3 +54,21 @@ export async function createEvent(eventData) {
     return { success: false, message: error.message };
   }
 }
+
+/**
+ * Fetches a list of all event metadata items.
+ * @returns {Promise<Array>} A promise that resolves to an array of events.
+ */
+export async function listEvents() {
+  const url = `${API_BASE_URL}/events`;
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`API request failed with status ${response.status}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Failed to list events:", error);
+    return [];
+  }
+}

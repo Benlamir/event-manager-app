@@ -95,52 +95,80 @@
     <div id="create-event-modal" class="modal-overlay hidden">
       <div class="modal-content create-event-container">
         <form id="create-event-form">
-          <h2>Créer un nouvel événement</h2>
+          <div class="form-content-wrapper">
+            <div class="form-left-panel">
+              <div class="event-image-upload-placeholder">
+                <span class="image-icon">🖼️</span>
+                <button type="button" class="change-photo-btn">
+                  Changer la photo
+                </button>
+              </div>
+            </div>
 
-          <div class="form-group">
-            <label for="eventName">Nom de l'événement</label>
-            <input
-              type="text"
-              id="eventName"
-              placeholder="Tournoi Wuthering Waves"
-              required
-            />
-          </div>
+            <div class="form-right-panel">
+              <div class="form-row">
+                <input
+                  type="text"
+                  id="eventName"
+                  placeholder="Nom de l'événement"
+                  class="event-name-input"
+                  required
+                />
+              </div>
 
-          <div class="form-group">
-            <label for="eventDate">Date de l'événement</label>
-            <input
-              type="text"
-              id="eventDate"
-              placeholder="e.g., 2026-01-01T19:00:00Z"
-              required
-            />
-          </div>
+              <div class="form-row timing-section">
+                <div class="timing-labels">
+                  <p>Début</p>
+                  <p>fin</p>
+                </div>
+                <div class="timing-inputs">
+                  <input type="text" class="date-input" value="dim. 27 AVR" />
+                  <input type="text" class="time-input" value="18:00" />
+                  <input type="text" class="date-input" value="dim. 27 AVR" />
+                  <input type="text" class="time-input" value="19:00" />
+                </div>
+                <div class="timezone-info">
+                  <span>🌍</span>
+                  <p>GMT +01:00<br />Casablanca</p>
+                </div>
+              </div>
 
-          <div class="form-group">
-            <label for="capacity">Capacité</label>
-            <input type="number" id="capacity" required value="16" />
-          </div>
+              <div class="form-row action-row">
+                <span>🎥</span>
+                <p>Ajouter une plateforme d'appel video</p>
+                <span>▶</span>
+              </div>
+              <div class="form-row action-row">
+                <span>📄</span>
+                <p>Ajouter une description</p>
+                <span>▶</span>
+              </div>
 
-          <div class="form-group">
-            <label for="description">Description</label>
-            <textarea
-              id="description"
-              placeholder="Ajouter une description..."
-            ></textarea>
-          </div>
+              <h3 class="options-header">Options d'événement</h3>
 
-          <div class="form-actions">
-            <button
-              type="button"
-              id="cancel-create-btn"
-              class="button-secondary"
-            >
-              Cancel
-            </button>
-            <button type="submit" class="button-create-event">
-              Créer un événement
-            </button>
+              <div class="form-row option-row">
+                <span>👤</span>
+                <p>Demander l'UID sur le jeu</p>
+                <input type="checkbox" checked />
+              </div>
+              <div class="form-row option-row">
+                <span>👥</span>
+                <p>Demander le pseudo sur la plateforme d'appel</p>
+                <input type="checkbox" checked />
+              </div>
+              <div class="form-row option-row">
+                <span>🔺</span>
+                <p>Capacité</p>
+                <span class="capacity-value">16 participants</span>
+                <span>✏️</span>
+              </div>
+
+              <div class="form-row">
+                <button type="submit" class="button-create-event">
+                  Créer un événement
+                </button>
+              </div>
+            </div>
           </div>
         </form>
       </div>

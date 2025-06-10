@@ -1,108 +1,81 @@
-// Main JavaScript file for the Event Manager Dashboard
-// This will be populated with our application logic in the next steps
-
-// Import functions from our modules
-import { getEventDetails, createEvent } from "./api.js";
-import { renderEventDetails, renderEventList } from "./ui.js";
+// js/main.js (Final Version)
+import { getEventDetails, createEvent, listEvents } from './api.js';
+import { renderEventDetails, renderEventList } from './ui.js';
 
 // --- DOM Element References ---
-// We get references to all the elements we need to interact with
-const addEventBtn = document.getElementById("add-event-btn");
-const createEventModal = document.getElementById("create-event-modal");
-const cancelCreateBtn = document.getElementById("cancel-create-btn");
-const createEventForm = document.getElementById("create-event-form");
-const eventListContainer = document.getElementById("event-list");
-
-// Debug: Log if elements are found
-console.log("Add Event Button:", addEventBtn);
-console.log("Create Event Modal:", createEventModal);
-console.log("Cancel Create Button:", cancelCreateBtn);
-console.log("Create Event Form:", createEventForm);
-console.log("Event List Container:", eventListContainer);
+const addEventBtn = document.getElementById('add-event-btn');
+const createEventModal = document.getElementById('create-event-modal');
+const createEventForm = document.getElementById('create-event-form');
+const eventListContainer = document.getElementById('event-list');
 
 // --- Functions ---
 
-// Shows the "Create Event" modal
 function showCreateEventModal() {
-  console.log("Showing modal...");
-  createEventModal.classList.remove("hidden");
-  console.log("Modal classes after showing:", createEventModal.classList);
+    createEventModal.classList.remove('hidden');
 }
 
-// Hides the "Create Event" modal
+// ** RESTORED "WARN ON CLOSE" LOGIC **
 function hideCreateEventModal() {
-  console.log("Hiding modal...");
-  createEventModal.classList.add("hidden");
-  console.log("Modal classes after hiding:", createEventModal.classList);
-  createEventForm.reset();
+    const eventNameInput = document.getElementById('eventName');
+    if (eventNameInput.value.trim() !== '') {
+        const userIsSure = confirm("You have unsaved changes. Are you sure you want to close?");
+        if (!userIsSure) {
+            return;
+        }
+    }
+    createEventForm.reset();
+    createEventModal.classList.add('hidden');
 }
 
-// Handles the submission of the "Create Event" form
 async function handleCreateEventSubmit(event) {
-  event.preventDefault(); // Prevent the default form submission (which reloads the page)
-
-  // Get the values from the form inputs
-  const eventData = {
-    eventName: document.getElementById("eventName").value,
-    eventDate: document.getElementById("eventDate").value,
-    capacity: parseInt(document.getElementById("capacity").value, 10),
-    description: document.getElementById("description").value,
-  };
-
-  console.log("Submitting new event data:", eventData);
-
-  const result = await createEvent(eventData);
-
-  if (result.eventId) {
-    alert(`Event created successfully! New Event ID: ${result.eventId}`);
-    hideCreateEventModal();
-
-    // ** THE CLOSED LOOP **
-    // Immediately fetch and display the event we just created
-    const fullEventDetails = await getEventDetails(result.eventId);
-    renderEventDetails(fullEventDetails);
-  } else {
-    alert("Failed to create event. Check the console for errors.");
-  }
+    event.preventDefault();
+    const eventData = {
+        eventName: document.getElementById('eventName').value,
+        eventDate: "2026-05-20T19:00:00Z", // Placeholder
+        capacity: 16, // Placeholder
+        description: "Event created from the UI!",
+    };
+    const result = await createEvent(eventData);
+    if (result.eventId) {
+        alert(`Event created successfully!`);
+        hideCreateEventModal();
+        loadInitialEvents(); // Refresh the event list after creating a new one
+    } else {
+        alert("Failed to create event.");
+    }
 }
 
-async function loadAndDisplayEvent() {
-  // We will get a fresh ID in the next steps.
-  const eventId = "e75f8180-43c4-4bc3-bfa9-107fbc41fd76";
+// ** NEW: Fetches and displays the list of events in the sidebar **
+async function loadInitialEvents() {
+    console.log("Fetching all events...");
+    const events = await listEvents();
+    renderEventList(events);
+}
 
-  console.log(`Fetching data for event: ${eventId}`);
-  const eventData = await getEventDetails(eventId);
-  console.log("Data received from API:", eventData);
+// ** NEW: Handles clicks on an event in the sidebar **
+async function handleEventClick(event) {
+    const clickedItem = event.target.closest('.event-list-item');
+    if (!clickedItem) return;
 
-  renderEventDetails(eventData);
+    const eventId = clickedItem.dataset.eventId;
+    console.log(`Sidebar item clicked. Fetching details for event: ${eventId}`);
+    
+    const eventDetails = await getEventDetails(eventId);
+    renderEventDetails(eventDetails);
 }
 
 // --- Main Execution ---
-document.addEventListener("DOMContentLoaded", () => {
-  console.log("DOM Content Loaded");
+document.addEventListener('DOMContentLoaded', () => {
+    addEventBtn.addEventListener('click', showCreateEventModal);
+    createEventForm.addEventListener('submit', handleCreateEventSubmit);
+    eventListContainer.addEventListener('click', handleEventClick); // Listen for clicks on the sidebar
 
-  // --- Event Listeners ---
-  if (addEventBtn) {
-    console.log("Adding click listener to add event button");
-    addEventBtn.addEventListener("click", showCreateEventModal);
-  } else {
-    console.error("Add Event Button not found!");
-  }
+    createEventModal.addEventListener('click', (event) => {
+        if (event.target === createEventModal) {
+            hideCreateEventModal();
+        }
+    });
 
-  if (cancelCreateBtn) {
-    console.log("Adding click listener to cancel button");
-    cancelCreateBtn.addEventListener("click", hideCreateEventModal);
-  } else {
-    console.error("Cancel Create Button not found!");
-  }
-
-  if (createEventForm) {
-    console.log("Adding submit listener to form");
-    createEventForm.addEventListener("submit", handleCreateEventSubmit);
-  } else {
-    console.error("Create Event Form not found!");
-  }
-
-  // For now, we'll just load one event to test.
-  loadAndDisplayEvent();
+    // Load the list of events when the page starts
+    loadInitialEvents();
 });

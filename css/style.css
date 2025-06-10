@@ -188,87 +188,159 @@ body {
   border-radius: 10px;
 }
 
-/* Add this new CSS for the specific Create Event Form */
-.create-event-container {
-  width: 800px; /* Wider modal */
-  max-width: 90%;
-  background-color: #f9f9f9;
+/* =================================== */
+/* MODAL & CREATE EVENT FORM STYLES    */
+/* =================================== */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
 }
 
-#create-event-form {
+.modal-overlay.hidden {
+  display: none;
+}
+
+.modal-content {
+  background-color: #ffffff; /* White background for the form container */
+  padding: 40px;
+  border-radius: 12px;
+  width: 900px; /* A wider modal for the two-panel layout */
+  max-width: 95%;
+}
+
+/* This is the main container inside the form */
+.form-content-wrapper {
+  display: flex;
+  gap: 40px;
+}
+
+.form-left-panel,
+.form-right-panel {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
 }
 
+.form-right-panel {
+  flex-grow: 1; /* The right panel takes up the remaining space */
+  gap: 1rem; /* Space between the rows in the right panel */
+}
+
+/* --- Left Panel: Image Upload --- */
+.event-image-upload-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.event-image-upload-placeholder .image-icon {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background-color: #d9d9d9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 3rem;
+  color: #aaaaaa;
+}
+
+.change-photo-btn {
+  background: #e0e0e0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+/* --- Right Panel: Form Rows --- */
 .form-row {
   display: flex;
   align-items: center;
-  background-color: #f0f0f0; /* Light grey background for rows */
-  padding: 1rem;
+  background-color: #f0f0f0;
+  padding: 12px;
   border-radius: 8px;
   gap: 1rem;
 }
 
-.event-name-row input {
+.event-name-input {
   font-size: 24px;
-  font-weight: bold;
+  font-weight: 600;
+  font-family: "Inter", sans-serif; /* Using font from your design */
   border: none;
   background: transparent;
   width: 100%;
 }
 
-.main-details-row {
-  gap: 2rem;
+.timing-section {
+  justify-content: space-between;
 }
 
-.event-image-upload {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  background-color: #e0e0e0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 2rem;
+.timing-labels {
+  text-align: right;
+  font-weight: 500;
+}
+.timing-labels p {
+  margin: 12px 0;
 }
 
-.event-timing {
-  flex-grow: 1;
+.timing-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
 }
 
-.time-input-group {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.time-input-group label {
-  width: 50px;
-}
-
-.time-input-group input {
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 0.5rem;
+.time-input,
+.date-input {
+  background-color: #cbcbcb;
+  border: none;
+  border-radius: 6px;
+  padding: 10px;
   text-align: center;
+  font-weight: 600;
 }
 
-.timezone {
+.timezone-info {
   text-align: center;
+  font-size: 14px;
+  font-weight: 500;
 }
-.timezone p {
+.timezone-info span {
+  font-size: 24px;
+}
+.timezone-info p {
   margin: 0;
 }
 
 .action-row {
   cursor: pointer;
+  font-weight: 600;
 }
 .action-row p {
   flex-grow: 1;
   margin: 0;
 }
 
+.options-header {
+  font-weight: 500;
+  color: #333;
+  margin-top: 20px;
+  margin-bottom: 0;
+}
+
+.option-row {
+  font-weight: 600;
+}
 .option-row p {
   flex-grow: 1;
   margin: 0;
@@ -277,121 +349,23 @@ body {
   width: 20px;
   height: 20px;
 }
-
 .capacity-value {
-  color: #666;
+  color: #757575;
 }
 
 .button-create-event {
   width: 100%;
   padding: 1rem;
   font-size: 16px;
-  font-weight: bold;
+  font-weight: 600;
   color: white;
-  background-color: #555;
+  background-color: #757575;
   border: none;
   border-radius: 8px;
   cursor: pointer;
+  transition: background-color 0.2s;
 }
 
 .button-create-event:hover {
-  background-color: #333;
-}
-
-/* Modal Header and Cancel Button */
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-.modal-header h2 {
-  margin: 0;
-  font-size: 1.5rem;
-}
-
-.cancel-button {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  padding: 0.5rem;
-  color: #666;
-}
-
-.cancel-button:hover {
-  color: #333;
-}
-
-/* Modal Overlay */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modal-overlay.hidden {
-  display: none;
-}
-
-.modal-content {
-  background: white;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-/* Form Styling */
-.form-group {
-  margin-bottom: 1.5rem;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: bold;
-  color: #333;
-}
-
-.form-group input,
-.form-group textarea {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 1rem;
-}
-
-.form-group textarea {
-  min-height: 100px;
-  resize: vertical;
-}
-
-.form-actions {
-  display: flex;
-  gap: 1rem;
-  justify-content: flex-end;
-  margin-top: 2rem;
-}
-
-.button-secondary {
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  color: #666;
-  background-color: #f0f0f0;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.button-secondary:hover {
-  background-color: #e0e0e0;
+  background-color: #555;
 }
