@@ -102,6 +102,27 @@ Resources:
         Variables:
           TABLE_NAME: !Ref EventsTable
 
+  ListEventsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/functions/list_events/
+      Handler: app.lambda_handler
+      Runtime: python3.12
+      Timeout: 20
+      Events:
+        ApiEvent:
+          Type: HttpApi
+          Properties:
+            Path: /events
+            Method: get
+            ApiId: !Ref EventsApi
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref EventsTable
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref EventsTable
+
 Outputs:
   EventsApiUrl:
     Description: "API Gateway endpoint URL for Events API"

@@ -1,28 +1,81 @@
-// Main JavaScript file for the Event Manager Dashboard
-// This will be populated with our application logic in the next steps 
+// js/main.js (Final Version)
+import { getEventDetails, createEvent, listEvents } from './api.js';
+import { renderEventDetails, renderEventList } from './ui.js';
 
-// Import functions from our modules
-import { getEventDetails } from './api.js';
-import { renderEventDetails } from './ui.js';
+// --- DOM Element References ---
+const addEventBtn = document.getElementById('add-event-btn');
+const createEventModal = document.getElementById('create-event-modal');
+const createEventForm = document.getElementById('create-event-form');
+const eventListContainer = document.getElementById('event-list');
 
-// This function runs when the page loads
-async function loadAndDisplayEvent() {
-    // For this test, let's use the eventId from our last successful curl test
-    const eventId = "916a1425-08c0-4f87-9321-6956a71e2f9f"; // Use a real ID from your tests
+// --- Functions ---
 
-    console.log(`Fetching data for event: ${eventId}`);
-    const eventData = await getEventDetails(eventId);
-    console.log("Data received from API:", eventData);
-
-    // Instead of just logging, let's render the data to the page!
-    renderEventDetails(eventData);
+function showCreateEventModal() {
+    createEventModal.classList.remove('hidden');
 }
 
-// Wait for the entire HTML document to be loaded and ready before running the script
-document.addEventListener('DOMContentLoaded', () => {
-    // We are simplifying for now and removing the tab logic
-    // We will add it back later when we build the other panels
+// ** RESTORED "WARN ON CLOSE" LOGIC **
+function hideCreateEventModal() {
+    const eventNameInput = document.getElementById('eventName');
+    if (eventNameInput.value.trim() !== '') {
+        const userIsSure = confirm("You have unsaved changes. Are you sure you want to close?");
+        if (!userIsSure) {
+            return;
+        }
+    }
+    createEventForm.reset();
+    createEventModal.classList.add('hidden');
+}
 
-    // Load initial data when the page loads
-    loadAndDisplayEvent();
-}); 
+async function handleCreateEventSubmit(event) {
+    event.preventDefault();
+    const eventData = {
+        eventName: document.getElementById('eventName').value,
+        eventDate: "2026-05-20T19:00:00Z", // Placeholder
+        capacity: 16, // Placeholder
+        description: "Event created from the UI!",
+    };
+    const result = await createEvent(eventData);
+    if (result.eventId) {
+        alert(`Event created successfully!`);
+        hideCreateEventModal();
+        loadInitialEvents(); // Refresh the event list after creating a new one
+    } else {
+        alert("Failed to create event.");
+    }
+}
+
+// ** NEW: Fetches and displays the list of events in the sidebar **
+async function loadInitialEvents() {
+    console.log("Fetching all events...");
+    const events = await listEvents();
+    renderEventList(events);
+}
+
+// ** NEW: Handles clicks on an event in the sidebar **
+async function handleEventClick(event) {
+    const clickedItem = event.target.closest('.event-list-item');
+    if (!clickedItem) return;
+
+    const eventId = clickedItem.dataset.eventId;
+    console.log(`Sidebar item clicked. Fetching details for event: ${eventId}`);
+    
+    const eventDetails = await getEventDetails(eventId);
+    renderEventDetails(eventDetails);
+}
+
+// --- Main Execution ---
+document.addEventListener('DOMContentLoaded', () => {
+    addEventBtn.addEventListener('click', showCreateEventModal);
+    createEventForm.addEventListener('submit', handleCreateEventSubmit);
+    eventListContainer.addEventListener('click', handleEventClick); // Listen for clicks on the sidebar
+
+    createEventModal.addEventListener('click', (event) => {
+        if (event.target === createEventModal) {
+            hideCreateEventModal();
+        }
+    });
+
+    // Load the list of events when the page starts
+    loadInitialEvents();
+});
