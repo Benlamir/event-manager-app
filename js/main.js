@@ -1,6 +1,10 @@
 // js/main.js (Updated Version)
 import { getEventDetails, createEvent, listEvents } from "./api.js";
-import { renderEventDetails, renderEventList } from "./ui.js";
+import {
+  renderEventDetails,
+  renderEventList,
+  updateHeaderTitle,
+} from "./ui.js";
 
 // --- DOM Element References ---
 const addEventBtn = document.getElementById("add-event-btn");
@@ -66,6 +70,12 @@ async function handleEventClick(event) {
     .forEach((item) => item.classList.remove("active"));
   clickedItem.classList.add("active");
 
+  // Update the header title to match the selected event
+  const headerTitle = document.querySelector(".sidebar-title");
+  if (headerTitle) {
+    headerTitle.textContent = clickedItem.textContent.trim();
+  }
+
   // Show event details
   showEventDetails();
 
@@ -127,4 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Show initial view by default
   showInitialView();
+
+  // Set initial header title
+  updateHeaderTitle();
 });

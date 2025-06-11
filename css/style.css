@@ -30,7 +30,7 @@ body {
   justify-content: flex-end;
   align-items: center;
   align-content: flex-end;
-  padding: 12px 480px;
+  padding: 12px min(480px, 20vw);
   gap: 25px 146px;
   width: 100%;
   height: calc(100vh - 60px);
@@ -186,8 +186,7 @@ body {
 
 .event-list-item:nth-child(2) {
   top: 83px;
-  background: #ffffff;
-  border-width: 1px 0px 1px 1px;
+  background: #d5d5d5;
 }
 
 .event-list-item:nth-child(3) {

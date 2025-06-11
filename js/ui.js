@@ -145,4 +145,19 @@ export function renderEventList(events) {
 
     eventListEl.insertAdjacentHTML("beforeend", additionalItems);
   }
+
+  // Update the header title to match the currently active event
+  updateHeaderTitle();
+}
+
+/**
+ * Updates the header title to match the currently active event
+ */
+export function updateHeaderTitle() {
+  const activeEvent = document.querySelector(".event-list-item.active");
+  const headerTitle = document.querySelector(".sidebar-title");
+
+  if (activeEvent && headerTitle) {
+    headerTitle.textContent = activeEvent.textContent.trim();
+  }
 }
