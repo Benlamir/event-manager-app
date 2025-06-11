@@ -11,85 +11,134 @@
       <div class="top-bar"></div>
 
       <div class="dashboard-container">
-        <aside class="sidebar">
-          <div class="sidebar-header">
-            <button id="add-event-btn" class="add-event-button">+</button>
-          </div>
-          <ul id="event-list" class="event-list">
-            <li class="event-list-item active">Tournoi Holograme Wuthe...</li>
-            <li class="event-list-item">Another Event</li>
-          </ul>
-        </aside>
-
-        <main class="main-content">
-          <div class="event-details-header">
-            <h1>Tournoi Holograme Wuthering Waves</h1>
+        <div class="content-wrapper">
+          <div class="header-section">
+            <button id="add-event-btn" class="add-event-button">
+              <span class="plus-icon">+</span>
+            </button>
+            <h1 class="sidebar-title">Tournoi Holograme Wuthering Waves</h1>
           </div>
 
-          <div class="tabs-container">
-            <nav class="tab-nav">
-              <button class="tab-link active" data-tab="apercu">Aperçu</button>
-              <button class="tab-link" data-tab="participants">
-                Participants
-              </button>
-              <button class="tab-link" data-tab="waitlist">
-                Liste d'attente
-              </button>
-              <button class="tab-link" data-tab="email-config">
-                Configuration Email
-              </button>
-            </nav>
+          <div class="dashboard-layout">
+            <aside class="sidebar">
+              <div id="event-list" class="event-list">
+                <div class="event-list-item" data-event-id="event-1">
+                  Tournoi Holograme Wuthe...
+                </div>
+                <div class="event-list-item active" data-event-id="event-2">
+                  Tournoi Holograme Wuthering waves
+                </div>
+                <div class="event-list-item" data-event-id="event-3">
+                  Another Event
+                </div>
+              </div>
+            </aside>
 
-            <div class="tab-content">
-              <div id="apercu-tab" class="tab-panel active">
-                <div class="apercu-details">
-                  <div class="apercu-image-placeholder">
-                    <p>Event Image</p>
-                  </div>
-                  <div class="apercu-info">
-                    <h3>Quand et Où</h3>
-                    <p>📅 27 AVR.</p>
-                    <p>⏰ 19:00 - 20:00 UTC+1</p>
-                    <p>☑️ Discord</p>
-                  </div>
+            <main id="main-content" class="main-content">
+              <div class="main-content-inner">
+                <div class="initial-view">
+                  <h2>
+                    Select an event from the list to see its details, or create
+                    a new one.
+                  </h2>
                 </div>
 
-                <div class="participants-summary">
-                  <h3>Résumé des participations</h3>
-                  <div class="summary-item">
-                    <span>Inscrits</span>
-                    <div class="progress-bar-container">
-                      <div class="progress-bar" style="width: 43.75%"></div>
+                <!-- Event Details Content (hidden initially) -->
+                <div
+                  id="event-details-view"
+                  class="event-details-view"
+                  style="display: none"
+                >
+                  <nav class="tab-nav">
+                    <button class="tab-link active" data-tab="apercu">
+                      Aperçu
+                    </button>
+                    <button class="tab-link" data-tab="participants">
+                      Participants
+                    </button>
+                    <button class="tab-link" data-tab="waitlist">
+                      Liste d'attente
+                    </button>
+                    <button class="tab-link" data-tab="email-config">
+                      Configuration Email
+                    </button>
+                  </nav>
+
+                  <div class="event-details-content">
+                    <div class="event-info-section">
+                      <div class="event-image-container">
+                        <div class="event-image">
+                          <div class="event-image-placeholder"></div>
+                        </div>
+                        <button class="change-photo-btn">
+                          Changer la photo
+                        </button>
+                      </div>
+
+                      <div class="event-details">
+                        <h3>Quand et Où</h3>
+                        <div class="event-detail-row">
+                          <div class="icon">📅</div>
+                          <div class="text">27 AVR. 19:00 - 20:00 UTC+1</div>
+                        </div>
+                        <div class="event-detail-row">
+                          <div class="icon">🎥</div>
+                          <div class="text">Discord</div>
+                        </div>
+                      </div>
+
+                      <button class="modify-event-btn">
+                        Modifier l'événement
+                      </button>
                     </div>
-                    <span>7/16</span>
-                  </div>
-                  <div class="summary-item">
-                    <span>Confirmés</span>
-                    <div class="progress-bar-container">
-                      <div class="progress-bar" style="width: 28.57%"></div>
+
+                    <h3 class="participation-summary-title">
+                      Résumé des participations
+                    </h3>
+
+                    <div class="participation-summary">
+                      <div class="summary-stats">
+                        <div class="summary-item">
+                          <div class="progress-bg"></div>
+                          <div
+                            class="progress-bar"
+                            style="width: 426.22px"
+                          ></div>
+                          <div class="label">Inscrits</div>
+                          <div class="value">7/16</div>
+                        </div>
+                        <div class="summary-item">
+                          <div class="progress-bg"></div>
+                          <div
+                            class="progress-bar"
+                            style="width: 358.83px"
+                          ></div>
+                          <div class="label">confirmés</div>
+                          <div class="value">2/7</div>
+                        </div>
+                        <div class="summary-item">
+                          <div class="progress-bg"></div>
+                          <div class="progress-bar" style="width: 0px"></div>
+                          <div class="label">En liste d'attente</div>
+                          <div class="value">0</div>
+                        </div>
+                        <div class="summary-item">
+                          <div class="progress-bg"></div>
+                          <div
+                            class="progress-bar"
+                            style="width: 899.31px"
+                          ></div>
+                          <div class="label">Participations annulés</div>
+                          <div class="value">2</div>
+                        </div>
+                      </div>
                     </div>
-                    <span>2/7</span>
-                  </div>
-                  <div class="summary-item">
-                    <span>En liste d'attente</span>
-                    <div class="progress-bar-container">
-                      <div class="progress-bar" style="width: 0%"></div>
-                    </div>
-                    <span>0</span>
-                  </div>
-                  <div class="summary-item">
-                    <span>Participations annulées</span>
-                    <span>2</span>
                   </div>
                 </div>
               </div>
-
-              <div id="participants-tab" class="tab-panel"></div>
-              <div id="waitlist-tab" class="tab-panel"></div>
-              <div id="email-config-tab" class="tab-panel"></div>
-            </div>
+            </main>
           </div>
-        </main>
+        </div>
       </div>
     </div>
     <div id="create-event-modal" class="modal-overlay hidden">
@@ -122,10 +171,13 @@
                   <p>fin</p>
                 </div>
                 <div class="timing-inputs">
-                  <input type="text" class="date-input" value="dim. 27 AVR" />
-                  <input type="text" class="time-input" value="18:00" />
-                  <input type="text" class="date-input" value="dim. 27 AVR" />
-                  <input type="text" class="time-input" value="19:00" />
+                  <input
+                    type="datetime-local"
+                    id="eventDate"
+                    class="date-input"
+                    required
+                  />
+                  <input type="datetime-local" class="date-input" />
                 </div>
                 <div class="timezone-info">
                   <span>🌍</span>
@@ -138,10 +190,13 @@
                 <p>Ajouter une plateforme d'appel video</p>
                 <span>▶</span>
               </div>
-              <div class="form-row action-row">
-                <span>📄</span>
-                <p>Ajouter une description</p>
-                <span>▶</span>
+              <div class="form-row">
+                <label for="description">📄 Description</label>
+                <textarea
+                  id="description"
+                  placeholder="Ajouter une description"
+                  rows="3"
+                ></textarea>
               </div>
 
               <h3 class="options-header">Options d'événement</h3>
@@ -159,8 +214,14 @@
               <div class="form-row option-row">
                 <span>🔺</span>
                 <p>Capacité</p>
-                <span class="capacity-value">16 participants</span>
-                <span>✏️</span>
+                <input
+                  type="number"
+                  id="capacity"
+                  value="16"
+                  min="1"
+                  max="100"
+                />
+                <span>participants</span>
               </div>
 
               <div class="form-row">
