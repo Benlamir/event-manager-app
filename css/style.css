@@ -30,7 +30,7 @@ body {
   justify-content: flex-end;
   align-items: center;
   align-content: flex-end;
-  padding: 12px min(480px, 20vw);
+  padding: 12px min(480px, 10vw);
   gap: 25px 146px;
   width: 100%;
   height: calc(100vh - 60px);
