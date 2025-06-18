@@ -775,3 +775,33 @@ label {
   margin-bottom: 0.5rem;
   font-weight: 500;
 }
+
+.button-danger {
+  background-color: #e53e3e; /* A fiery red */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.button-danger:hover {
+  background-color: #c53030; /* A darker red on hover */
+}
+
+.action-section {
+    margin-top: 2rem;
+    padding: 1rem;
+    background: #f7f7f7;
+    border-radius: 8px;
+    border: 1px solid #e2e2e2;
+}
+
+.action-section p {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #555;
+}

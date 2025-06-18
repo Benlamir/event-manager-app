@@ -1,5 +1,5 @@
-// js/main.js (Updated Version)
-import { getEventDetails, createEvent, listEvents } from "./api.js";
+// js/main.js
+import { getEventDetails, createEvent, listEvents, deleteEvent } from "./api.js";
 import {
   renderEventDetails,
   renderEventList,
@@ -13,6 +13,7 @@ const createEventForm = document.getElementById("create-event-form");
 const eventListContainer = document.getElementById("event-list");
 const initialView = document.querySelector(".initial-view");
 const eventDetailsView = document.getElementById("event-details-view");
+const deleteEventBtn = document.getElementById("delete-event-btn"); // Référence au bouton supprimer
 
 // --- Functions ---
 function showCreateEventModal() {
@@ -45,14 +46,42 @@ async function handleCreateEventSubmit(event) {
   };
 
   const result = await createEvent(eventData);
+
   if (result.eventId) {
     alert(`Event created successfully!`);
     hideCreateEventModal();
     loadInitialEvents();
+  } else if (result.message) {
+    alert(`Error: ${result.message}`);
   } else {
-    alert("Failed to create event.");
+    alert("An unknown error occurred while creating the event.");
   }
 }
+
+async function handleDeleteEvent() {
+    const activeEvent = document.querySelector(".event-list-item.active");
+    if (!activeEvent) {
+        alert("Please select an event to delete.");
+        return;
+    }
+
+    const eventId = activeEvent.dataset.eventId;
+    const eventName = activeEvent.textContent.trim();
+
+    if (confirm(`Are you sure you want to permanently delete the event "${eventName}"? This action cannot be undone.`)) {
+        console.log(`Deleting event: ${eventId}`);
+        const result = await deleteEvent(eventId);
+
+        if (result.success) {
+            alert(`Event "${eventName}" was deleted successfully.`);
+            showInitialView();
+            loadInitialEvents();
+        } else {
+            alert(`Failed to delete event. Error: ${result.message}`);
+        }
+    }
+}
+
 
 async function loadInitialEvents() {
   console.log("Fetching all events...");
@@ -64,19 +93,16 @@ async function handleEventClick(event) {
   const clickedItem = event.target.closest(".event-list-item");
   if (!clickedItem) return;
 
-  // De-select all other items and select the clicked one
   document
     .querySelectorAll(".event-list-item")
     .forEach((item) => item.classList.remove("active"));
   clickedItem.classList.add("active");
 
-  // Update the header title to match the selected event
   const headerTitle = document.querySelector(".sidebar-title");
   if (headerTitle) {
     headerTitle.textContent = clickedItem.textContent.trim();
   }
 
-  // Show event details
   showEventDetails();
 
   const eventId = clickedItem.dataset.eventId;
@@ -92,17 +118,22 @@ function handleTabClick(event) {
   const clickedTab = event.target.closest(".tab-link");
   if (!clickedTab) return;
 
-  // Remove active class from all tabs
   document
     .querySelectorAll(".tab-link")
     .forEach((tab) => tab.classList.remove("active"));
-
-  // Add active class to clicked tab
   clickedTab.classList.add("active");
 
-  // Here you can add logic to show different tab content
   const tabName = clickedTab.dataset.tab;
   console.log(`Switched to tab: ${tabName}`);
+
+  document.querySelectorAll(".tab-content").forEach(panel => {
+      if(panel) panel.style.display = "none";
+  });
+
+  const contentToShow = document.getElementById(`${tabName}-tab-content`);
+  if (contentToShow) {
+      contentToShow.style.display = "block";
+  }
 }
 
 // --- Main Execution ---
@@ -110,19 +141,25 @@ document.addEventListener("DOMContentLoaded", () => {
   // Add event listeners with null checks
   if (addEventBtn) {
     addEventBtn.addEventListener("click", showCreateEventModal);
-    console.log("Add event button listener attached");
-  } else {
-    console.error("Add event button not found");
   }
 
-  if (createEventForm)
+  if (createEventForm) {
     createEventForm.addEventListener("submit", handleCreateEventSubmit);
-  if (eventListContainer)
-    eventListContainer.addEventListener("click", handleEventClick);
+  }
 
-  // Add tab navigation
+  if (eventListContainer) {
+    eventListContainer.addEventListener("click", handleEventClick);
+  }
+  
+  // Attacher l'écouteur pour la suppression
+  if(deleteEventBtn) {
+    deleteEventBtn.addEventListener('click', handleDeleteEvent);
+  }
+
   const tabNav = document.querySelector(".tab-nav");
-  if (tabNav) tabNav.addEventListener("click", handleTabClick);
+  if (tabNav) {
+    tabNav.addEventListener("click", handleTabClick);
+  }
 
   if (createEventModal) {
     createEventModal.addEventListener("click", (event) => {
@@ -132,12 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Load the list of events when the page starts
   loadInitialEvents();
-
-  // Show initial view by default
   showInitialView();
-
-  // Set initial header title
   updateHeaderTitle();
 });

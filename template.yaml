@@ -26,14 +26,22 @@ Resources:
           - GET
           - POST
           - OPTIONS
+          - DELETE
 
   EventsTable:
-    Type: AWS::Serverless::SimpleTable
+    Type: AWS::DynamoDB::Table
     Properties:
       TableName: EventsManagementTable
-      PrimaryKey:
-        Name: PK
-        Type: String
+      AttributeDefinitions:
+        - AttributeName: PK
+          AttributeType: S # S = String (Chaîne de caractères)
+        - AttributeName: SK
+          AttributeType: S
+      KeySchema:
+        - AttributeName: PK
+          KeyType: HASH  # HASH = Clé de Partition
+        - AttributeName: SK
+          KeyType: RANGE # RANGE = Clé de Tri
       ProvisionedThroughput:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1
@@ -55,6 +63,27 @@ Resources:
             ApiId: !Ref EventsApi
       Policies:
         - DynamoDBCrudPolicy:
+            TableName: !Ref EventsTable
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref EventsTable
+
+  DeleteEventFunction: # New Function Definition
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/functions/delete_event/
+      Handler: app.lambda_handler
+      Runtime: python3.12
+      Timeout: 20
+      Events:
+        ApiEvent:
+          Type: HttpApi
+          Properties:
+            Path: /events/{event_id}
+            Method: delete # Use the DELETE http method
+            ApiId: !Ref EventsApi
+      Policies:
+        - DynamoDBCrudPolicy: # Needs read and write (for delete) access
             TableName: !Ref EventsTable
       Environment:
         Variables:

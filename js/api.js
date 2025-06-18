@@ -72,3 +72,25 @@ export async function listEvents() {
     return [];
   }
 }
+
+export async function deleteEvent(eventId) {
+  const url = `${API_BASE_URL}/events/${eventId}`;
+  try {
+    const response = await fetch(url, {
+      method: "DELETE",
+    });
+
+    if (!response.ok) {
+      throw new Error(`API request failed with status ${response.status}`);
+    }
+    
+    // Check if response has content before parsing as JSON
+    const responseText = await response.text();
+    return responseText ? JSON.parse(responseText) : { success: true };
+
+  } catch (error) {
+    console.error("Failed to delete event:", error);
+    return { success: false, message: error.message };
+  }
+}
+
