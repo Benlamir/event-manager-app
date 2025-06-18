@@ -1,6 +1,6 @@
 // The base URL of your live API Gateway endpoint
 // IMPORTANT: Replace this with the URL from your 'sam deploy' output
-const API_BASE_URL = "https://e7rli8hasl.execute-api.us-east-1.amazonaws.com";
+const API_BASE_URL = "http://127.0.0.1:3000";
 
 /**
  * Fetches all data for a specific event (metadata and participants).
