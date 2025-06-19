@@ -101,53 +101,32 @@ export function renderEventDetails(eventItems) {
  * @param {Array} events - An array of event metadata objects.
  */
 export function renderEventList(events) {
-  if (!eventListEl) return;
-
-  if (events.length === 0) {
-    eventListEl.innerHTML =
-      '<div class="event-list-item">No events found.</div>';
+  const eventListEl = document.getElementById("event-list");
+  if (!eventListEl) {
+    console.error("Event list container not found!");
     return;
   }
 
-  // Keep the existing structure but update with real data
-  const existingItems = eventListEl.querySelectorAll(".event-list-item");
-
-  events.forEach((event, index) => {
-    if (existingItems[index]) {
-      existingItems[index].textContent =
-        event.EventName || `Event ${index + 1}`;
-      existingItems[index].dataset.eventId = event.PK
-        ? event.PK.split("#")[1]
-        : `event-${index}`;
-    }
-  });
-
-  // If we have more events than existing items, add them
-  if (events.length > existingItems.length) {
-    const additionalItems = events
-      .slice(existingItems.length)
-      .map((event, index) => {
-        const actualIndex = existingItems.length + index;
-        const topPosition = actualIndex * 83; // 83px height per item
-        return `
-                <div class="event-list-item" 
-                     data-event-id="${
-                       event.PK
-                         ? event.PK.split("#")[1]
-                         : `event-${actualIndex}`
-                     }"
-                     style="top: ${topPosition}px; background: #D5D5D5;">
-                    ${event.EventName || `Event ${actualIndex + 1}`}
-                </div>
-            `;
-      })
-      .join("");
-
-    eventListEl.insertAdjacentHTML("beforeend", additionalItems);
+  // Si la liste est vide, afficher le message et s'arrêter.
+  if (!events || events.length === 0) {
+    eventListEl.innerHTML = '<div class="event-list-item">No events found.</div>';
+    return;
   }
 
-  // Update the header title to match the currently active event
-  updateHeaderTitle();
+  // Si la liste n'est pas vide, construire une chaîne HTML pour tous les éléments.
+  const eventItemsHTML = events.map(event => {
+      const eventId = event.PK ? event.PK.split("#")[1] : '';
+      const eventName = event.EventName || 'Untitled Event';
+
+      // Tronquer les noms trop longs pour un meilleur affichage
+      const displayName = eventName.length > 30 ? eventName.substring(0, 27) + "..." : eventName;
+
+      // Retourner la chaîne de caractères HTML pour cet élément
+      return `<div class="event-list-item" data-event-id="${eventId}">${displayName}</div>`;
+  }).join(""); // .join("") transforme le tableau de chaînes en une seule grande chaîne
+
+  // Remplacer tout le contenu de la sidebar en une seule opération.
+  eventListEl.innerHTML = eventItemsHTML;
 }
 
 /**

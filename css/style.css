@@ -152,9 +152,8 @@ body {
 
 /* Event List */
 .event-list {
-  position: relative;
-  width: 100%;
-  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .event-list-item {
@@ -165,8 +164,8 @@ body {
   align-items: center;
   padding: 22px 0px;
   gap: 10px;
-  position: absolute;
-  width: 220px;
+  
+  width: 100%;
   height: 83px;
   font-family: "Inter";
   font-style: normal;

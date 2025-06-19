@@ -58,28 +58,34 @@ async function handleCreateEventSubmit(event) {
   }
 }
 
+// Dans js/main.js
+
 async function handleDeleteEvent() {
-    const activeEvent = document.querySelector(".event-list-item.active");
-    if (!activeEvent) {
-        alert("Please select an event to delete.");
-        return;
-    }
+  const activeEvent = document.querySelector(".event-list-item.active");
+  if (!activeEvent) {
+      alert("Please select an event to delete.");
+      return;
+  }
 
-    const eventId = activeEvent.dataset.eventId;
-    const eventName = activeEvent.textContent.trim();
+  const eventId = activeEvent.dataset.eventId;
+  const eventName = activeEvent.textContent.trim();
 
-    if (confirm(`Are you sure you want to permanently delete the event "${eventName}"? This action cannot be undone.`)) {
-        console.log(`Deleting event: ${eventId}`);
-        const result = await deleteEvent(eventId);
+  if (confirm(`Are you sure you want to permanently delete the event "${eventName}"? This action cannot be undone.`)) {
+      console.log(`Deleting event: ${eventId}`);
+      const result = await deleteEvent(eventId);
 
-        if (result.success) {
-            alert(`Event "${eventName}" was deleted successfully.`);
-            showInitialView();
-            loadInitialEvents();
-        } else {
-            alert(`Failed to delete event. Error: ${result.message}`);
-        }
-    }
+      // --- LOGIQUE CORRIGÉE ---
+      // Si la propriété `success` est explicitement `false`, c'est une erreur réseau ou API.
+      // Sinon, on considère que c'est un succès (l'API a renvoyé un message).
+      if (result.success === false) {
+          alert(`Failed to delete event. Error: ${result.message}`);
+      } else {
+          // C'est le chemin du succès
+          alert(result.message); // On affiche le vrai message de succès du serveur
+          showInitialView(); // On retourne à la vue initiale
+          loadInitialEvents(); // On rafraîchit la liste des événements dans la sidebar
+      }
+  }
 }
 
 
