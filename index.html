@@ -16,31 +16,29 @@
             <button id="add-event-btn" class="add-event-button">
               <span class="plus-icon">+</span>
             </button>
-            <h1 class="sidebar-title">Tournoi Holograme Wuthering Waves</h1>
+            <h1 class="sidebar-title">Mes Événements</h1>
           </div>
 
           <div class="dashboard-layout">
             <aside class="sidebar">
-              <div id="event-list" class="event-list">
-                <div class="event-list-item" data-event-id="event-1">
-                  Tournoi Holograme Wuthe...
-                </div>
-                <div class="event-list-item active" data-event-id="event-2">
-                  Tournoi Holograme Wuthering waves
-                </div>
-                <div class="event-list-item" data-event-id="event-3">
-                  Another Event
-                </div>
-              </div>
+              <div id="event-list" class="event-list"></div>
             </aside>
 
             <main id="main-content" class="main-content">
               <div class="main-content-inner">
-                <div class="initial-view">
+                <div id="initial-view" class="initial-view">
                   <h2>
-                    Select an event from the list to see its details, or create
-                    a new one.
+                    Sélectionnez un événement pour voir ses détails, ou créez-en
+                    un nouveau.
                   </h2>
+                </div>
+
+                <div
+                  id="no-events-view"
+                  class="initial-view"
+                  style="display: none"
+                >
+                  <h2>Aucun événement trouvé.</h2>
                 </div>
 
                 <!-- Event Details Content (hidden initially) -->

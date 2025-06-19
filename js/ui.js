@@ -97,46 +97,50 @@ export function renderEventDetails(eventItems) {
 }
 
 /**
- * Renders the list of events into the sidebar.
- * @param {Array} events - An array of event metadata objects.
+ * Affiche la liste des événements dans la sidebar.
+ * Si la liste est vide, la sidebar reste simplement vide.
+ * @param {Array} events - Un tableau d'objets d'événements.
  */
 export function renderEventList(events) {
   const eventListEl = document.getElementById("event-list");
-  if (!eventListEl) {
-    console.error("Event list container not found!");
-    return;
+  if (!eventListEl) return;
+
+  // Vider la liste. Elle restera vide si aucun événement n'est fourni.
+  eventListEl.innerHTML = "";
+
+  if (events && events.length > 0) {
+    const eventItemsHTML = events
+      .map((event) => {
+        const eventId = event.PK ? event.PK.split("#")[1] : "";
+        const eventName = event.EventName || "Untitled Event";
+        const displayName =
+          eventName.length > 30
+            ? eventName.substring(0, 27) + "..."
+            : eventName;
+        return `<div class="event-list-item" data-event-id="${eventId}">${displayName}</div>`;
+      })
+      .join("");
+
+    eventListEl.innerHTML = eventItemsHTML;
   }
-
-  // Si la liste est vide, afficher le message et s'arrêter.
-  if (!events || events.length === 0) {
-    eventListEl.innerHTML = '<div class="event-list-item">No events found.</div>';
-    return;
-  }
-
-  // Si la liste n'est pas vide, construire une chaîne HTML pour tous les éléments.
-  const eventItemsHTML = events.map(event => {
-      const eventId = event.PK ? event.PK.split("#")[1] : '';
-      const eventName = event.EventName || 'Untitled Event';
-
-      // Tronquer les noms trop longs pour un meilleur affichage
-      const displayName = eventName.length > 30 ? eventName.substring(0, 27) + "..." : eventName;
-
-      // Retourner la chaîne de caractères HTML pour cet élément
-      return `<div class="event-list-item" data-event-id="${eventId}">${displayName}</div>`;
-  }).join(""); // .join("") transforme le tableau de chaînes en une seule grande chaîne
-
-  // Remplacer tout le contenu de la sidebar en une seule opération.
-  eventListEl.innerHTML = eventItemsHTML;
 }
 
 /**
- * Updates the header title to match the currently active event
+ * Met à jour le titre principal de la sidebar.
+ * Affiche le nom de l'événement actif, ou un titre par défaut si aucun n'est sélectionné.
  */
 export function updateHeaderTitle() {
   const activeEvent = document.querySelector(".event-list-item.active");
   const headerTitle = document.querySelector(".sidebar-title");
 
-  if (activeEvent && headerTitle) {
+  // Sécurité pour ne rien faire si l'élément titre n'existe pas
+  if (!headerTitle) return;
+
+  if (activeEvent) {
+    // Si un événement est actif, on affiche son nom
     headerTitle.textContent = activeEvent.textContent.trim();
+  } else {
+    // Sinon, on remet le titre par défaut
+    headerTitle.textContent = "Mes Événements";
   }
 }

@@ -1,5 +1,10 @@
 // js/main.js
-import { getEventDetails, createEvent, listEvents, deleteEvent } from "./api.js";
+import {
+  getEventDetails,
+  createEvent,
+  listEvents,
+  deleteEvent,
+} from "./api.js";
 import {
   renderEventDetails,
   renderEventList,
@@ -11,7 +16,8 @@ const addEventBtn = document.getElementById("add-event-btn");
 const createEventModal = document.getElementById("create-event-modal");
 const createEventForm = document.getElementById("create-event-form");
 const eventListContainer = document.getElementById("event-list");
-const initialView = document.querySelector(".initial-view");
+const initialView = document.getElementById("initial-view");
+const noEventsView = document.getElementById("no-events-view");
 const eventDetailsView = document.getElementById("event-details-view");
 const deleteEventBtn = document.getElementById("delete-event-btn"); // Référence au bouton supprimer
 
@@ -25,14 +31,19 @@ function hideCreateEventModal() {
   if (createEventModal) createEventModal.classList.add("hidden");
 }
 
-function showEventDetails() {
-  if (initialView) initialView.style.display = "none";
-  if (eventDetailsView) eventDetailsView.style.display = "block";
-}
+// NOUVELLE fonction pour gérer quelle vue principale afficher
+function showMainContentView(viewName) {
+  initialView.style.display = "none";
+  noEventsView.style.display = "none";
+  eventDetailsView.style.display = "none";
 
-function showInitialView() {
-  if (initialView) initialView.style.display = "flex";
-  if (eventDetailsView) eventDetailsView.style.display = "none";
+  if (viewName === "initial") {
+    initialView.style.display = "flex";
+  } else if (viewName === "no-events") {
+    noEventsView.style.display = "flex";
+  } else if (viewName === "details") {
+    eventDetailsView.style.display = "block";
+  }
 }
 
 async function handleCreateEventSubmit(event) {
@@ -63,38 +74,51 @@ async function handleCreateEventSubmit(event) {
 async function handleDeleteEvent() {
   const activeEvent = document.querySelector(".event-list-item.active");
   if (!activeEvent) {
-      alert("Please select an event to delete.");
-      return;
+    alert("Please select an event to delete.");
+    return;
   }
 
   const eventId = activeEvent.dataset.eventId;
   const eventName = activeEvent.textContent.trim();
 
-  if (confirm(`Are you sure you want to permanently delete the event "${eventName}"? This action cannot be undone.`)) {
-      console.log(`Deleting event: ${eventId}`);
-      const result = await deleteEvent(eventId);
+  if (
+    confirm(
+      `Are you sure you want to permanently delete the event "${eventName}"? This action cannot be undone.`
+    )
+  ) {
+    console.log(`Deleting event: ${eventId}`);
+    const result = await deleteEvent(eventId);
 
-      // --- LOGIQUE CORRIGÉE ---
-      // Si la propriété `success` est explicitement `false`, c'est une erreur réseau ou API.
-      // Sinon, on considère que c'est un succès (l'API a renvoyé un message).
-      if (result.success === false) {
-          alert(`Failed to delete event. Error: ${result.message}`);
-      } else {
-          // C'est le chemin du succès
-          alert(result.message); // On affiche le vrai message de succès du serveur
-          showInitialView(); // On retourne à la vue initiale
-          loadInitialEvents(); // On rafraîchit la liste des événements dans la sidebar
-      }
+    // --- LOGIQUE CORRIGÉE ---
+    // Si la propriété `success` est explicitement `false`, c'est une erreur réseau ou API.
+    // Sinon, on considère que c'est un succès (l'API a renvoyé un message).
+    if (result.success === false) {
+      alert(`Failed to delete event. Error: ${result.message}`);
+    } else {
+      // C'est le chemin du succès
+      alert(result.message); // On affiche le vrai message de succès du serveur
+      showMainContentView("initial"); // On retourne à la vue initiale
+      loadInitialEvents(); // On rafraîchit la liste des événements dans la sidebar
+    }
   }
 }
 
-
+// METTEZ À JOUR la fonction loadInitialEvents
 async function loadInitialEvents() {
   console.log("Fetching all events...");
   const events = await listEvents();
   renderEventList(events);
+  updateHeaderTitle(); // Met à jour le titre après le rendu
+
+  // Décide quelle vue afficher en fonction du nombre d'événements
+  if (events.length > 0) {
+    showMainContentView("initial");
+  } else {
+    showMainContentView("no-events");
+  }
 }
 
+// METTEZ À JOUR la fonction handleEventClick
 async function handleEventClick(event) {
   const clickedItem = event.target.closest(".event-list-item");
   if (!clickedItem) return;
@@ -104,16 +128,11 @@ async function handleEventClick(event) {
     .forEach((item) => item.classList.remove("active"));
   clickedItem.classList.add("active");
 
-  const headerTitle = document.querySelector(".sidebar-title");
-  if (headerTitle) {
-    headerTitle.textContent = clickedItem.textContent.trim();
-  }
+  updateHeaderTitle();
 
-  showEventDetails();
-
+  // Affiche la vue des détails et la remplit
+  showMainContentView("details");
   const eventId = clickedItem.dataset.eventId;
-  console.log(`Fetching details for event: ${eventId}`);
-
   if (eventId) {
     const eventDetails = await getEventDetails(eventId);
     renderEventDetails(eventDetails);
@@ -132,13 +151,13 @@ function handleTabClick(event) {
   const tabName = clickedTab.dataset.tab;
   console.log(`Switched to tab: ${tabName}`);
 
-  document.querySelectorAll(".tab-content").forEach(panel => {
-      if(panel) panel.style.display = "none";
+  document.querySelectorAll(".tab-content").forEach((panel) => {
+    if (panel) panel.style.display = "none";
   });
 
   const contentToShow = document.getElementById(`${tabName}-tab-content`);
   if (contentToShow) {
-      contentToShow.style.display = "block";
+    contentToShow.style.display = "block";
   }
 }
 
@@ -156,10 +175,10 @@ document.addEventListener("DOMContentLoaded", () => {
   if (eventListContainer) {
     eventListContainer.addEventListener("click", handleEventClick);
   }
-  
+
   // Attacher l'écouteur pour la suppression
-  if(deleteEventBtn) {
-    deleteEventBtn.addEventListener('click', handleDeleteEvent);
+  if (deleteEventBtn) {
+    deleteEventBtn.addEventListener("click", handleDeleteEvent);
   }
 
   const tabNav = document.querySelector(".tab-nav");
@@ -176,6 +195,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   loadInitialEvents();
-  showInitialView();
+  showMainContentView("initial");
   updateHeaderTitle();
 });
