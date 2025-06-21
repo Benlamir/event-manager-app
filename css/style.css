@@ -1,8 +1,39 @@
+/* CSS Variables for Color Centralization */
+:root {
+  --primary-color: #64748b; /* Un bleu-gris pour les éléments principaux */
+  --secondary-color: #e2e8f0; /* Un gris clair pour le fond et les éléments secondaires */
+  --accent-color: #475569; /* Un bleu plus foncé pour les accents et les bordures */
+  --text-color: #1e293b; /* Un gris foncé pour le texte principal */
+  --text-secondary-color: #4a5568; /* Un gris plus clair pour le texte secondaire */
+  --background-color: #f8fafc; /* Un blanc cassé pour le fond de la page */
+  --glass-background: rgba(
+    255,
+    255,
+    255,
+    0.7
+  ); /* Fond semi-transparent pour l'effet de verre */
+  --glass-blur: 10px; /* Intensité du flou pour l'effet de verre */
+  --glass-border: rgba(
+    255,
+    255,
+    255,
+    0.3
+  ); /* Bordure subtile pour l'effet de verre */
+  --button-primary-color: var(--primary-color);
+  --button-primary-text-color: var(--secondary-color);
+  --button-primary-hover-color: #4a5568;
+  --button-secondary-color: transparent;
+  --button-secondary-text-color: var(--primary-color);
+  --button-secondary-border-color: var(--primary-color);
+  --button-secondary-hover-color: var(--secondary-color);
+  --button-secondary-hover-text-color: var(--primary-color);
+}
+
 /* General Body Styles */
 body {
   font-family: "Inter", sans-serif;
-  background-color: #ffffff;
-  color: #333;
+  background-color: var(--background-color);
+  color: var(--text-color);
   margin: 0;
   padding: 20px 0px;
   height: 100vh;
@@ -34,7 +65,7 @@ body {
   gap: 25px 146px;
   width: 100%;
   height: calc(100vh - 60px);
-  background: #e4e4e4;
+  background: var(--secondary-color);
   border-radius: 10px;
   flex: none;
   order: 0;
@@ -76,7 +107,7 @@ body {
 .add-event-button {
   width: 98px;
   height: 86px;
-  background: #aeaeae;
+  background: var(--primary-color);
   border-radius: 10px;
   border: none;
   cursor: pointer;
@@ -84,6 +115,11 @@ body {
   order: 0;
   flex-grow: 0;
   position: relative;
+  transition: background-color 0.3s ease;
+}
+
+.add-event-button:hover {
+  background: var(--button-primary-hover-color);
 }
 
 .plus-icon {
@@ -92,8 +128,8 @@ body {
   height: 70px;
   left: calc(50% - 70px / 2);
   top: calc(50% - 70px / 2);
-  background: #1d1b20;
-  color: white;
+  background: var(--text-color);
+  color: var(--button-primary-text-color);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -110,7 +146,7 @@ body {
   font-weight: 700;
   font-size: 24px;
   line-height: 29px;
-  color: #000000;
+  color: var(--primary-color);
   flex: none;
   order: 1;
   flex-grow: 0;
@@ -137,13 +173,23 @@ body {
   box-sizing: border-box;
   width: 220px;
   height: 100%;
-  background: #eeeeee;
-  border: 1px solid #757575;
+  background: var(--secondary-color);
+  border: 1px solid var(--accent-color);
   border-radius: 6px;
   flex: none;
   order: 0;
   flex-grow: 0;
   position: relative;
+}
+
+/* Remove sidebar right border when an item is active */
+.sidebar:has(.event-list-item.active) {
+  border-right: none;
+}
+
+/* Fallback for browsers that don't support :has() */
+.sidebar.has-active-item {
+  border-right: none;
 }
 
 .sidebar-header {
@@ -164,7 +210,7 @@ body {
   align-items: center;
   padding: 22px 0px;
   gap: 10px;
-  
+
   width: 100%;
   height: 83px;
   font-family: "Inter";
@@ -172,30 +218,19 @@ body {
   font-weight: 600;
   font-size: 16px;
   line-height: 19px;
-  color: #000000;
+  color: var(--text-color);
   cursor: pointer;
-  border: 1px solid #757575;
+  border: 5px solid var(--background-color);
   border-radius: 6px 0px 0px 6px;
-}
-
-.event-list-item:nth-child(1) {
-  top: 0px;
-  background: #d5d5d5;
-}
-
-.event-list-item:nth-child(2) {
-  top: 83px;
-  background: #d5d5d5;
-}
-
-.event-list-item:nth-child(3) {
-  top: 166px;
-  background: #d5d5d5;
+  transition: background-color 0.3s ease;
+  border-right: none;
 }
 
 .event-list-item.active {
-  background: #ffffff !important;
+  background: var(--background-color) !important;
+  color: var(--text-color);
   border-width: 1px 0px 1px 1px;
+  border-right: none; /* Remove right border to flow into main content */
 }
 
 /* Main Content */
@@ -208,14 +243,15 @@ body {
   gap: 24px;
   width: calc(100% - 220px);
   height: 100%;
-  background: #ffffff;
+  background: var(--background-color);
   border-width: 1px 1px 1px 0px;
   border-style: solid;
-  border-color: #757575;
+  border-color: var(--accent-color);
   border-radius: 0px 10px 10px 0px;
   flex: none;
   order: 1;
   flex-grow: 1;
+  border-left: none; /* Remove left border to connect with active sidebar item */
 }
 
 .main-content-inner {
@@ -238,7 +274,7 @@ body {
   justify-content: center;
   align-items: center;
   height: 100%;
-  color: #888;
+  color: var(--text-secondary-color);
   font-size: 1.2rem;
   flex-grow: 1;
 }
@@ -263,7 +299,7 @@ body {
   gap: 33px;
   width: 100%;
   height: 39px;
-  border-bottom: 1px solid #757575;
+  border-bottom: 1px solid var(--accent-color);
   flex: none;
   order: 0;
   flex-grow: 0;
@@ -286,13 +322,38 @@ body {
   font-weight: 400;
   font-size: 16px;
   line-height: 19px;
-  color: #757575;
+  color: var(--text-secondary-color);
+  transition: color 0.3s ease;
+}
+
+.tab-link:hover {
+  color: var(--text-color);
 }
 
 .tab-link.active {
-  background: linear-gradient(180deg, #ffffff 0%, #999999 100%);
-  border-bottom: 2px solid #000000;
-  color: #000000;
+  background: linear-gradient(
+    180deg,
+    var(--background-color) 0%,
+    var(--secondary-color) 100%
+  );
+  border-bottom: 2px solid var(--primary-color);
+  color: var(--primary-color);
+}
+
+/* Tab Content */
+.tab-content {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0px;
+  gap: 19px;
+  width: 100%;
+  height: 100%;
+  flex: none;
+  order: 0;
+  flex-grow: 1;
+  align-self: stretch;
 }
 
 /* Event Details Content */
@@ -321,8 +382,8 @@ body {
   isolation: isolate;
   width: 100%;
   min-height: 285px;
-  background: #ffffff;
-  border: 1px solid #b2b2b2;
+  background: var(--background-color);
+  border: 1px solid var(--accent-color);
   border-radius: 10px;
   flex: none;
   order: 0;
@@ -350,7 +411,7 @@ body {
 .event-image {
   width: 220px;
   height: 220px;
-  background: #aaaaaa;
+  background: var(--secondary-color);
   border-radius: 6px;
   flex: none;
   order: 0;
@@ -364,7 +425,7 @@ body {
   height: 120px;
   left: calc(50% - 120px / 2);
   top: 42px;
-  background: #d9d9d9;
+  background: var(--accent-color);
   border-radius: 50%;
 }
 
@@ -378,8 +439,9 @@ body {
   gap: 10px;
   width: 144px;
   height: 30px;
-  background: #d9d9d9;
-  border: 1px solid #757575;
+  background: var(--button-secondary-color);
+  color: var(--button-secondary-text-color);
+  border: 1px solid var(--button-secondary-border-color);
   border-radius: 6px;
   flex: none;
   order: 1;
@@ -390,7 +452,12 @@ body {
   font-weight: 500;
   font-size: 11px;
   line-height: 13px;
-  color: #5c5c5c;
+  transition: all 0.3s ease;
+}
+
+.change-photo-btn:hover {
+  background: var(--button-secondary-hover-color);
+  color: var(--button-secondary-hover-text-color);
 }
 
 /* Event Details */
@@ -416,7 +483,7 @@ body {
   font-weight: 700;
   font-size: 16px;
   line-height: 19px;
-  color: #000000;
+  color: var(--text-color);
   flex: none;
   order: 0;
   align-self: stretch;
@@ -451,7 +518,7 @@ body {
   font-weight: 600;
   font-size: 16px;
   line-height: 19px;
-  color: #000000;
+  color: var(--text-color);
   flex: none;
   order: 1;
   flex-grow: 1;
@@ -471,8 +538,9 @@ body {
   height: 37px;
   right: 10px;
   top: 233px;
-  background: #d9d9d9;
-  border: 1px solid #757575;
+  background: var(--button-secondary-color);
+  color: var(--button-secondary-text-color);
+  border: 1px solid var(--button-secondary-border-color);
   border-radius: 6px;
   flex: none;
   order: 2;
@@ -484,7 +552,12 @@ body {
   font-weight: 500;
   font-size: 11px;
   line-height: 13px;
-  color: #5c5c5c;
+  transition: all 0.3s ease;
+}
+
+.modify-event-btn:hover {
+  background: var(--button-secondary-hover-color);
+  color: var(--button-secondary-hover-text-color);
 }
 
 /* Participation Summary */
@@ -496,7 +569,7 @@ body {
   font-weight: 700;
   font-size: 16px;
   line-height: 19px;
-  color: #000000;
+  color: var(--text-color);
   flex: none;
   order: 1;
   align-self: stretch;
@@ -514,8 +587,8 @@ body {
   gap: 37px;
   width: 100%;
   min-height: 238px;
-  background: #ffffff;
-  border: 1px solid #b2b2b2;
+  background: var(--background-color);
+  border: 1px solid var(--accent-color);
   border-radius: 10px;
   flex: none;
   order: 2;
@@ -552,7 +625,7 @@ body {
   height: 12px;
   left: 0px;
   top: 30.65px;
-  background: #d9d9d9;
+  background: var(--secondary-color);
   border-radius: 16px;
 }
 
@@ -561,7 +634,7 @@ body {
   height: 12px;
   left: 0.28px;
   top: 31px;
-  background: #9d9d9d;
+  background: var(--primary-color);
   border-radius: 16px;
 }
 
@@ -574,7 +647,7 @@ body {
   font-weight: 500;
   font-size: 16px;
   line-height: 19px;
-  color: #000000;
+  color: var(--text-color);
 }
 
 .summary-item .value {
@@ -593,7 +666,7 @@ body {
   font-weight: 500;
   font-size: 16px;
   line-height: 19px;
-  color: #000000;
+  color: var(--text-color);
 }
 
 /* Modal Styles */
@@ -603,11 +676,12 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: transparent; /* Rendre l'arrière-plan initial transparent */
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 1000; /* Assurez-vous qu'il est au-dessus du reste */
+  backdrop-filter: blur(var(--glass-blur)); /* Appliquer le flou au fond */
 }
 
 .modal-overlay.hidden {
@@ -615,12 +689,16 @@ body {
 }
 
 .modal-content {
-  background: white;
-  border-radius: 10px;
+  background-color: var(
+    --glass-background
+  ); /* Utiliser le fond semi-transparent défini */
+  border: 1px solid var(--glass-border); /* Ajouter la bordure "verre" */
+  border-radius: 8px;
   padding: 2rem;
   max-width: 800px;
   max-height: 90vh;
   overflow-y: auto;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Une ombre subtile pour le démarquer */
 }
 
 .create-event-container {
@@ -643,7 +721,7 @@ body {
 .event-image-upload-placeholder {
   width: 200px;
   height: 200px;
-  background: #f0f0f0;
+  background: var(--secondary-color);
   border-radius: 10px;
   display: flex;
   flex-direction: column;
@@ -658,10 +736,17 @@ body {
 
 .change-photo-btn {
   padding: 0.5rem 1rem;
-  background: #ddd;
-  border: 1px solid #999;
+  background: var(--button-secondary-color);
+  color: var(--button-secondary-text-color);
+  border: 1px solid var(--button-secondary-border-color);
   border-radius: 5px;
   cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.change-photo-btn:hover {
+  background: var(--button-secondary-hover-color);
+  color: var(--button-secondary-hover-text-color);
 }
 
 .form-row {
@@ -671,9 +756,11 @@ body {
 .event-name-input {
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid #ddd;
+  border: 1px solid var(--accent-color);
   border-radius: 5px;
   font-size: 1rem;
+  background: var(--background-color);
+  color: var(--text-color);
 }
 
 .timing-section {
@@ -697,8 +784,10 @@ body {
 .date-input,
 .time-input {
   padding: 0.5rem;
-  border: 1px solid #ddd;
+  border: 1px solid var(--accent-color);
   border-radius: 3px;
+  background: var(--background-color);
+  color: var(--text-color);
 }
 
 .timezone-info {
@@ -712,9 +801,15 @@ body {
   align-items: center;
   gap: 1rem;
   padding: 0.75rem;
-  border: 1px solid #ddd;
+  border: 1px solid var(--accent-color);
   border-radius: 5px;
   cursor: pointer;
+  background: var(--background-color);
+  transition: background-color 0.3s ease;
+}
+
+.action-row:hover {
+  background: var(--secondary-color);
 }
 
 .options-header {
@@ -738,69 +833,73 @@ body {
 .button-create-event {
   width: 100%;
   padding: 1rem;
-  background: #007bff;
-  color: white;
+  background: var(--button-primary-color);
+  color: var(--button-primary-text-color);
   border: none;
   border-radius: 5px;
   font-size: 1rem;
   cursor: pointer;
   margin-top: 1rem;
+  transition: background-color 0.3s ease;
 }
 
 .button-create-event:hover {
-  background: #0056b3;
+  background: var(--button-primary-hover-color);
 }
 
 #capacity {
   width: 80px;
   padding: 0.5rem;
-  border: 1px solid #ddd;
+  border: 1px solid var(--accent-color);
   border-radius: 3px;
   margin-left: auto;
   margin-right: 0.5rem;
+  background: var(--background-color);
+  color: var(--text-color);
 }
 
 #description {
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid #ddd;
+  border: 1px solid var(--accent-color);
   border-radius: 5px;
-  font-family: inherit;
+  font-size: 1rem;
   resize: vertical;
+  background: var(--background-color);
+  color: var(--text-color);
 }
 
 label {
   display: block;
   margin-bottom: 0.5rem;
-  font-weight: 500;
+  font-weight: 600;
+  color: var(--text-color);
 }
 
 .button-danger {
-  background-color: #e53e3e; /* A fiery red */
+  background: #dc3545;
   color: white;
   border: none;
-  padding: 10px 20px;
+  padding: 0.8rem 1.5rem;
   border-radius: 8px;
-  font-size: 1rem;
-  font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.3s ease;
 }
 
 .button-danger:hover {
-  background-color: #c53030; /* A darker red on hover */
+  background: #c82333;
 }
 
 .action-section {
-    margin-top: 2rem;
-    padding: 1rem;
-    background: #f7f7f7;
-    border-radius: 8px;
-    border: 1px solid #e2e2e2;
+  margin-top: 2rem;
+  padding: 1rem;
+  background: #f7f7f7;
+  border-radius: 8px;
+  border: 1px solid #e2e2e2;
 }
 
 .action-section p {
-    margin-top: 0;
-    margin-bottom: 1rem;
-    color: #555;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #555;
 }
